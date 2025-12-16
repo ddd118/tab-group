@@ -1,23 +1,59 @@
 {
-  "name": "tab-group",
-  "displayName": "tab-group",
+  "name": "tab-router",
+  "displayName": "Tab Router",
   "description": "名前によるタブグループに自動仕分けします",
   "version": "0.0.1",
+  "publisher": "your-name-here",
   "engines": {
     "vscode": "^1.106.1"
   },
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "*"
+  ],
   "main": "./dist/extension.js",
   "contributes": {
-    "commands": [
-      {
-        "command": "tab-group.helloWorld",
-        "title": "Hello World"
+    "configuration": {
+      "title": "Tab Router",
+      "properties": {
+        "tabRouter.rules": {
+          "type": "array",
+          "description": "Rules to route editors to specific groups based on regex pattern.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "pattern": {
+                "type": "string",
+                "description": "JavaScript RegExp as string. Applied to fileName, uri, or languageId."
+              },
+              "targetGroup": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 9,
+                "description": "Target editor group index (1 = left-most)."
+              },
+              "matchField": {
+                "type": "string",
+                "enum": [
+                  "fileName",
+                  "uri",
+                  "languageId"
+                ],
+                "default": "fileName",
+                "description": "Which field to apply the regex to."
+              }
+            },
+            "required": [
+              "pattern",
+              "targetGroup"
+            ]
+          },
+          "default": []
+        }
       }
-    ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "pnpm run package",
