@@ -3,15 +3,25 @@
   "displayName": "Tab Router",
   "description": "Match tabs by RegExp and route them to specific editor groups (supports webviews/terminal tabs via tabGroups).",
   "version": "0.0.2",
-  "publisher": "your-name-here",
+  "publisher": "ddd118",                 
+  "license": "MIT",                      
   "engines": {
     "vscode": "^1.106.1"
   },
   "categories": [
     "Other"
   ],
+  "keywords": ["tabs", "tab", "editor", "routing", "group"],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ddd118/tab-group.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ddd118/tab-group/issues"
+  },
+  "homepage": "https://github.com/ddd118/tab-group#readme",
   "activationEvents": [
-    "*"
+    "onStartupFinished"
   ],
   "main": "./dist/extension.js",
   "contributes": {
