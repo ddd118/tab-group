@@ -1,8 +1,8 @@
 {
   "name": "tab-router",
   "displayName": "Tab Router",
-  "description": "名前によるタブグループに自動仕分けします",
-  "version": "0.0.1",
+  "description": "Match tabs by RegExp and route them to specific editor groups (supports webviews/terminal tabs via tabGroups).",
+  "version": "0.0.2",
   "publisher": "your-name-here",
   "engines": {
     "vscode": "^1.106.1"
@@ -15,42 +15,91 @@
   ],
   "main": "./dist/extension.js",
   "contributes": {
+    "commands": [
+      {
+        "command": "tabRouter.showActiveTabInfo",
+        "title": "Tab Router: Show Active Tab Info"
+      },
+      {
+        "command": "tabRouter.dumpTabGroups",
+        "title": "Tab Router: Dump Tab Groups"
+      },
+      {
+        "command": "tabRouter.routeActiveTabNow",
+        "title": "Tab Router: Route Active Tab Now"
+      }
+    ],
     "configuration": {
       "title": "Tab Router",
       "properties": {
         "tabRouter.rules": {
           "type": "array",
-          "description": "Rules to route editors to specific groups based on regex pattern.",
+          "default": [],
+          "description": "Routing rules evaluated against the active tab. First match wins.",
           "items": {
             "type": "object",
             "properties": {
               "pattern": {
                 "type": "string",
-                "description": "JavaScript RegExp as string. Applied to fileName, uri, or languageId."
+                "description": "JavaScript RegExp string."
               },
               "targetGroup": {
                 "type": "integer",
                 "minimum": 1,
                 "maximum": 9,
-                "description": "Target editor group index (1 = left-most)."
+                "description": "Target editor group (ViewColumn). 1 = left-most."
               },
               "matchField": {
                 "type": "string",
                 "enum": [
+                  "tabLabel",
+                  "tabInputType",
+                  "viewType",
                   "fileName",
                   "uri",
                   "languageId"
                 ],
                 "default": "fileName",
-                "description": "Which field to apply the regex to."
+                "description": "Which value to test against the pattern."
               }
             },
             "required": [
               "pattern",
               "targetGroup"
             ]
-          },
-          "default": []
+          }
+        },
+        "tabRouter.debug": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable verbose logging to the 'Tab Router' output channel."
+        },
+        "tabRouter.debounceMs": {
+          "type": "number",
+          "default": 120,
+          "minimum": 0,
+          "description": "Debounce milliseconds for tab change events (VS Code may fire multiple times)."
+        },
+        "tabRouter.requireTargetGroupExists": {
+          "type": "boolean",
+          "default": true,
+          "description": "If true, do not move unless the target group (ViewColumn) already exists."
+        },
+        "tabRouter.autoCreateGroups": {
+          "type": "boolean",
+          "default": false,
+          "description": "If true and target group does not exist, try to create groups by splitting editor to the right."
+        },
+        "tabRouter.maxAutoCreateGroups": {
+          "type": "number",
+          "default": 2,
+          "minimum": 0,
+          "description": "Safety limit for autoCreateGroups. 0 means unlimited (NOT recommended)."
+        },
+        "tabRouter.skipPinnedTabs": {
+          "type": "boolean",
+          "default": false,
+          "description": "If true, do not route pinned tabs."
         }
       }
     }
